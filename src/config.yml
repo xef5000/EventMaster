@@ -5,7 +5,7 @@ prefix: "&7[&6EventMaster&7]"
 # *   --
 
 meteorite-hologram-text: "&dMétéorite"
-meteorite-block: "OBSIDIAN"
+meteorite-block: OBSIDIAN
 meteorite-hologram: true
 meteorite-lightning: true
 meteorite-shockwave: true
