@@ -46,7 +46,10 @@ public class ListManager {
 
     public void addCoordinateToCustomList(String name, Location location) {
         JsonArray list = lists.get(name);
-        LinkedHashSet<Integer> coordinates = new LinkedHashSet<>(Arrays.asList((int) location.getX(), (int) location.getY(), (int) location.getZ()));
+        LinkedList<Integer> coordinates = new LinkedList<> ();
+        coordinates.add((int) location.getX());
+        coordinates.add((int) location.getY());
+        coordinates.add((int) location.getZ());
 
         JsonElement element = new Gson().toJsonTree(coordinates);
         list.add(element);
