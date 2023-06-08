@@ -3,13 +3,11 @@ package com.xef5000.EventMaster;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import org.bukkit.Location;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 public class ListManager {
@@ -42,6 +40,7 @@ public class ListManager {
 
     public void deleteCustomList(String name) {
         lists.remove(name);
+        save();
     }
 
     public void addCoordinateToCustomList(String name, Location location) {

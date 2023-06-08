@@ -3,7 +3,6 @@ package com.xef5000.EventMaster.Events;
 import com.xef5000.EventMaster.EventMaster;
 import com.xef5000.EventMaster.Utils.Hologram;
 import com.xef5000.EventMaster.Utils.Shockwave.Ripple;
-import com.xef5000.EventMaster.Utils.Shockwave.ShockwaveHandler;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -14,9 +13,9 @@ public class Meteorite {
         World world = blockPosition.getWorld();
         if (eventMaster.getConfig().getBoolean("meteorite-shockwave")) {
             //ShockwaveHandler sh = new ShockwaveHandler(eventMaster, 5);
-           // sh.createShockwave(blockPosition.clone().add(0, -1, 0));
+            //sh.createShockwave(blockPosition.clone().add(0, -1, 0));
 
-            Ripple rippleEffect = new Ripple(blockPosition.clone().add(0, -1, 0), 3.0, 0.15);
+            Ripple rippleEffect = new Ripple(eventMaster, blockPosition.clone().add(0, -1, 0), 7.0, 3.5, 0.15, 2);
             rippleEffect.runTaskTimer(eventMaster, 10L, 1L);
         }
 

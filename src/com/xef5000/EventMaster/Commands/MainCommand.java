@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.xef5000.EventMaster.EventMaster;
 import com.xef5000.EventMaster.Events.Meteorite;
 import com.xef5000.EventMaster.ListManager;
-import com.xef5000.EventMaster.Utils.Shockwave.ShockwaveHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,7 +12,6 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.util.Set;
@@ -42,6 +40,12 @@ public class MainCommand implements CommandExecutor {
             return true;
         } else if (args.length > 1) {
             if (args.length == 2 && args[0].equalsIgnoreCase("event") && args[1].equalsIgnoreCase("meteorite")) {
+                // Help
+                commandSender.sendMessage(EventMaster.COLOR_PREFIX + " §cPossible arguments: createlist, list, lists");
+
+                return true;
+            }
+            if (args.length == 3 && args[0].equalsIgnoreCase("event") && args[1].equalsIgnoreCase("meteorite") && args[2].equalsIgnoreCase("admin")) {
                 //EVENT METEORITE - admin event
                 World world = ((Player) commandSender).getWorld();
                 Location location = ((Player) commandSender).getTargetBlock((Set< Material >) null, 100).getLocation();
@@ -125,6 +129,21 @@ public class MainCommand implements CommandExecutor {
                     return true;
                 }
             }
+            if (args[0].equalsIgnoreCase("event") && args[1].equalsIgnoreCase("meteorite") && args[2].equalsIgnoreCase("lists")) {
+                if (listManager.lists.size() < 1) {
+                    commandSender.sendMessage(EventMaster.COLOR_PREFIX + " §cERROR: There are no existing list. Create one using /eventmaster event meteorite createlist <name>");
+                    return false;
+                }
+
+                StringBuilder sb = new StringBuilder();
+                for (String name : listManager.lists.keySet()) {
+                    sb.append(name).append(", ");
+                }
+                sb.replace(sb.length()-2, sb.length()-1, "");
+                commandSender.sendMessage(EventMaster.COLOR_PREFIX + " §7" + sb);
+                return true;
+            }
+
         }
 
 
