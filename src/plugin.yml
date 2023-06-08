@@ -1,0 +1,8 @@
+name: EventMaster
+version: 1.0
+main: com.xef5000.EventMaster.EventMaster
+author: xef5000
+commands:
+  eventmaster:
+    description: Main command of this plugin
+    permission: eventmaster.main

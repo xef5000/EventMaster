@@ -1,0 +1,13 @@
+prefix: "&7[&6EventMaster&7]"
+
+# *   --
+# *   Meteorite Event
+# *   --
+
+meteorite-hologram-text: "&dMétéorite"
+meteorite-block: "OBSIDIAN"
+meteorite-hologram: true
+meteorite-lightning: true
+meteorite-shockwave: true
+
+
