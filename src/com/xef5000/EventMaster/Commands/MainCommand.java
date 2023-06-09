@@ -41,7 +41,7 @@ public class MainCommand implements CommandExecutor {
         } else if (args.length > 1) {
             if (args.length == 2 && args[0].equalsIgnoreCase("event") && args[1].equalsIgnoreCase("meteorite")) {
                 // Help
-                commandSender.sendMessage(EventMaster.COLOR_PREFIX + " §cPossible arguments: createlist, list, lists");
+                commandSender.sendMessage(EventMaster.COLOR_PREFIX + " §cPossible arguments: createlist, list, lists, admin");
 
                 return true;
             }
@@ -70,10 +70,11 @@ public class MainCommand implements CommandExecutor {
             }
             if (args[0].equalsIgnoreCase("event") && args[1].equalsIgnoreCase("meteorite") && args[2].equalsIgnoreCase("list")) {
                 if (args.length <= 4) {
-                    commandSender.sendMessage(EventMaster.COLOR_PREFIX + " §cUsage: /eventmaster event meteorite list <name> <add/remove/edit>");
+                    commandSender.sendMessage(EventMaster.COLOR_PREFIX + " §cUsage: /eventmaster event meteorite list <name> <add/remove/delete/start/edit>");
                     commandSender.sendMessage("§7- §cadd: §7add the block you are looking at to the list");
                     commandSender.sendMessage("§7- §cremove: §7removes the block you are looking at from the list");
                     commandSender.sendMessage("§7- §cdelete: §7deletes the entire list §4(PERMANENT)");
+                    commandSender.sendMessage("§7- §cstart: §7start an event with that list");
                     commandSender.sendMessage("§7- §b(BETA) §cedit : §7toggle edit mode for that list");
                     return false;
                 }
@@ -89,6 +90,7 @@ public class MainCommand implements CommandExecutor {
                 if (action.equalsIgnoreCase("add")) {
                     Location location = ((Player) commandSender).getTargetBlock((Set< Material >) null, 100).getLocation();
                     for (JsonElement element : listManager.lists.get(listName)) {
+                        if (!element.isJsonArray()) continue;
                         JsonArray coords = element.getAsJsonArray();
                         int x = coords.get(0).getAsInt();
                         int y = coords.get(1).getAsInt() - 1;
@@ -126,6 +128,14 @@ public class MainCommand implements CommandExecutor {
                 if (action.equalsIgnoreCase("delete")) {
                     listManager.deleteCustomList(listName);
                     commandSender.sendMessage(EventMaster.COLOR_PREFIX + " §aSuccessfully removed the list §f" + listName);
+                    return true;
+                }
+                if (action.equalsIgnoreCase("start")) {
+                    if (!listManager.lists.containsKey(listName)) {
+                        commandSender.sendMessage(EventMaster.COLOR_PREFIX + " §cERROR: This list does not exist! §f" + listName);
+                        return false;
+                    }
+                    Meteorite.startEvent(listManager, listName);
                     return true;
                 }
             }

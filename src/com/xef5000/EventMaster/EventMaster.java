@@ -24,8 +24,8 @@ public class EventMaster extends JavaPlugin {
         getCommand("eventmaster").setExecutor(new MainCommand(listManager, this));
         getCommand("eventmaster").setTabCompleter(new MainCommandTabCompleter(listManager));
 
-        listManager.createCustomList("list1Example", new JsonArray());
-        listManager.addCoordinateToCustomList("list1Example", new Location(Bukkit.getWorld("world"), 10, 20, 31));
+        listManager.createCustomList("ExampleList", new JsonArray());
+        listManager.addCoordinateToCustomList("ExampleList", new Location(Bukkit.getWorld("world"), 10, 20, 31));
     }
 
 }

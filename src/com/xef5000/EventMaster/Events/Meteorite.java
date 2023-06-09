@@ -1,11 +1,14 @@
 package com.xef5000.EventMaster.Events;
 
 import com.xef5000.EventMaster.EventMaster;
+import com.xef5000.EventMaster.ListManager;
 import com.xef5000.EventMaster.Utils.Hologram;
 import com.xef5000.EventMaster.Utils.Shockwave.Ripple;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+
+import java.util.LinkedList;
 
 public class Meteorite {
 
@@ -25,6 +28,13 @@ public class Meteorite {
         if (eventMaster.getConfig().getBoolean("meteorite-hologram")) {
             Hologram hologram = new Hologram(eventMaster.getConfig().getString("meteorite-hologram-text").replace("&", "§"), blockPosition.clone().add(0.5, -0.6, 0.5));
             hologram.spawn();
+        }
+    }
+
+    public static void startEvent(ListManager listManager, String listName) {
+        LinkedList<Location> locations = listManager.getLocationsFromList(listName);
+        for (Location loc : locations) {
+            sendMeteorite(loc, listManager.main);
         }
     }
 

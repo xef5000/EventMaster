@@ -1,13 +1,10 @@
 package com.xef5000.EventMaster;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
+import com.google.gson.*;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class ListManager {
@@ -45,6 +42,9 @@ public class ListManager {
 
     public void addCoordinateToCustomList(String name, Location location) {
         JsonArray list = lists.get(name);
+        //JsonObject worldName = new JsonObject();
+        //worldName.addProperty("world", location.getWorld().toString());
+
         LinkedList<Integer> coordinates = new LinkedList<> ();
         coordinates.add((int) location.getX());
         coordinates.add((int) location.getY());
@@ -52,6 +52,21 @@ public class ListManager {
 
         JsonElement element = new Gson().toJsonTree(coordinates);
         list.add(element);
+        //JsonArray savedList = deepCopy(list, JsonArray.class);
+        boolean foundJsonObject = false;
+        for (JsonElement jsonElement : list) {
+            if (jsonElement.isJsonObject() && jsonElement.getAsJsonObject().get("world").getAsJsonPrimitive() != null) {
+                jsonElement.getAsJsonObject().addProperty("world", location.getWorld().getName());
+                foundJsonObject = true;
+                break;
+            }
+        }
+        if (!foundJsonObject) {
+            JsonObject worldName = new JsonObject();
+            worldName.addProperty("world", location.getWorld().getName());
+            list.add(worldName);
+        }
+
         save();
     }
 
@@ -60,6 +75,7 @@ public class ListManager {
         JsonArray newList = new JsonArray();
 
         for (JsonElement element : list) {
+            if (!element.isJsonArray()) continue;
             JsonArray coords = element.getAsJsonArray();
             int x = coords.get(0).getAsInt();
             int y = coords.get(1).getAsInt() - 1;
@@ -74,11 +90,80 @@ public class ListManager {
         save();
     }
 
+    public void loadFiles() {
+        ArrayList<File> files = (ArrayList<File>) listFilesForFolder(new File(main.getDataFolder() + "\\lists"));
+        for (File file : files) {
+            String fileName = file.getName();
+            try (FileReader reader = new FileReader(file)) {
+                JsonElement fileElement = new JsonParser().parse(reader);
+
+                if (fileElement == null || fileElement.isJsonNull()) {
+                    throw new JsonParseException("File is null!");
+                }
+
+                JsonArray parsedArray = fileElement.getAsJsonArray();
+                lists.put(fileName, parsedArray);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public List<File> listFilesForFolder(final File folder) {
+        ArrayList<File> files = new ArrayList<>();
+        for (final File fileEntry : folder.listFiles()) {
+            if (fileEntry.isDirectory()) {
+                listFilesForFolder(fileEntry);
+            } else {
+                files.add(fileEntry);
+            }
+        }
+        return files;
+    }
+
+    public LinkedList<Location> getLocationsFromList(String listName) {
+        if (!lists.containsKey(listName)) {
+            System.out.println("Error: list does not exist");
+            return null;
+        }
+        LinkedList<Location> locations = new LinkedList<>();
+        JsonArray jsonArray = lists.get(listName);
+
+        String worldname = null;
+
+        for (JsonElement jsonElement : jsonArray) {
+            if (jsonElement.isJsonObject() && jsonElement.getAsJsonObject().get("world").getAsJsonPrimitive().getAsString() != null)
+                worldname = jsonElement.getAsJsonObject().get("world").getAsJsonPrimitive().getAsString();
+
+        }
+
+        for (int i = 0; i < jsonArray.size(); i++) {
+            if (!jsonArray.get(i).isJsonArray()) continue;
+            JsonArray locationArray = (JsonArray) jsonArray.get(i);
+            int x = locationArray.get(0).getAsInt();
+            int y = locationArray.get(1).getAsInt();
+            int z = locationArray.get(2).getAsInt();
+            locations.add(new Location(Bukkit.getWorld(worldname), x, y, z));
+        }
+
+        return locations;
+    }
+
     public void save() {
         HashMap<String, JsonArray> lists1 = (HashMap<String, JsonArray>) lists.clone();
         lists.clear();
         for (String name : lists1.keySet()) {
             createCustomList(name, lists1.get(name));
+        }
+    }
+
+    public <T> T deepCopy(T object, Class<T> type) {
+        try {
+            Gson gson = new Gson();
+            return gson.fromJson(gson.toJson(object, type), type);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
