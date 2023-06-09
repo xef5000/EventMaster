@@ -13,7 +13,7 @@ meteorite-shockwave: true
 meteorite-lists:
   ExampleList: #Name must correspond to json file
     meteorite-hologram-text: "&dMeteorite from example list"
-    meteorite-block: "OBSIDIAN"
+    meteorite-block: OBSIDIAN
     meteorite-hologram: true
     meteorite-lightning: false
     meteorite-shockwave: true
