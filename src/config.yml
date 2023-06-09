@@ -10,4 +10,19 @@ meteorite-hologram: true
 meteorite-lightning: true
 meteorite-shockwave: true
 
+meteorite-lists:
+  ExampleList: #Name must correspond to json file
+    meteorite-hologram-text: "&dMeteorite from example list"
+    meteorite-block: "OBSIDIAN"
+    meteorite-hologram: true
+    meteorite-lightning: false
+    meteorite-shockwave: true
+    percent-land: 85 #What's the chance for a meteorite to land during an event at every spot
+    loot:
+      # - percent:amt:item
+      # EXAMPLE 10:1-2:DIAMOND_ORE
+      # 10% of getting diamond ore that will come in a random stack between 1 and 2
+      - 10:1-2:DIAMOND_ORE
+      - 75:10-16:DIRT
+
 
