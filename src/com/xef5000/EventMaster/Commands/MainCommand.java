@@ -50,7 +50,11 @@ public class MainCommand implements CommandExecutor {
                 World world = ((Player) commandSender).getWorld();
                 Location location = ((Player) commandSender).getTargetBlock((Set< Material >) null, 100).getLocation();
                 location.setY(location.getY() + 1);
-                Meteorite.sendMeteorite(location, eventMaster);
+                Meteorite meteorite = new Meteorite(location, eventMaster);
+                meteorite.sendMeteorite();
+
+
+                //Meteorite.sendMeteorite(location, eventMaster, eventMaster.getConfig().getBoolean("meteorite-shockwave"), eventMaster.getConfig().getBoolean("meteorite-lightning"), eventMaster.getConfig().getBoolean("meteorite-hologram"), true);
                 Bukkit.broadcastMessage(EventMaster.COLOR_PREFIX + " §cEvent §eMétéorite at §f" + location.getX() + "§c, §f" + location.getY() + "§c, §f" + location.getZ() + " §c!");
                 return true;
             }
@@ -131,11 +135,14 @@ public class MainCommand implements CommandExecutor {
                     return true;
                 }
                 if (action.equalsIgnoreCase("start")) {
+                    System.out.println("Trying to start with the list " + listName);
                     if (!listManager.lists.containsKey(listName)) {
                         commandSender.sendMessage(EventMaster.COLOR_PREFIX + " §cERROR: This list does not exist! §f" + listName);
                         return false;
                     }
-                    Meteorite.startEvent(listManager, listName);
+                    Meteorite meteorite = new Meteorite(listName, eventMaster);
+                    meteorite.sendMeteorites();
+                    //Meteorite.startEvent(listManager, listName);
                     return true;
                 }
             }

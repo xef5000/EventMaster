@@ -16,6 +16,7 @@ public class ListManager {
     }
 
     public void createCustomList(String name, JsonArray array) {
+        if (name.toLowerCase().contains(".json")) return;
         File directory = new File(main.getDataFolder() + "\\lists");
         File listFile = new File(directory, name + ".json");
         if (!listFile.exists()) {
@@ -94,6 +95,7 @@ public class ListManager {
         ArrayList<File> files = (ArrayList<File>) listFilesForFolder(new File(main.getDataFolder() + "\\lists"));
         for (File file : files) {
             String fileName = file.getName();
+            System.out.println("Found the file " + fileName);
             try (FileReader reader = new FileReader(file)) {
                 JsonElement fileElement = new JsonParser().parse(reader);
 
@@ -102,7 +104,7 @@ public class ListManager {
                 }
 
                 JsonArray parsedArray = fileElement.getAsJsonArray();
-                lists.put(fileName, parsedArray);
+                lists.put(fileName.replace(".json", ""), parsedArray);
             } catch (IOException e) {
                 e.printStackTrace();
             }

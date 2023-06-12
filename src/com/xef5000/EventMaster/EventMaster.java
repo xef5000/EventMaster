@@ -3,6 +3,7 @@ package com.xef5000.EventMaster;
 import com.google.gson.JsonArray;
 import com.xef5000.EventMaster.Commands.MainCommand;
 import com.xef5000.EventMaster.Commands.MainCommandTabCompleter;
+import com.xef5000.EventMaster.Listeners.EntityChangeBlockEventListener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -24,8 +25,19 @@ public class EventMaster extends JavaPlugin {
         getCommand("eventmaster").setExecutor(new MainCommand(listManager, this));
         getCommand("eventmaster").setTabCompleter(new MainCommandTabCompleter(listManager));
 
+        listManager.loadFiles();
+
         listManager.createCustomList("ExampleList", new JsonArray());
         listManager.addCoordinateToCustomList("ExampleList", new Location(Bukkit.getWorld("world"), 10, 20, 31));
+
+        getServer().getPluginManager().registerEvents(new EntityChangeBlockEventListener(this), this);
+
+    }
+
+    @Override
+    public void onDisable() {
+        listManager.loadFiles();
+        listManager.save();
     }
 
 }
