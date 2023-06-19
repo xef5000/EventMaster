@@ -1,4 +1,4 @@
-package com.xef5000.EventMaster.Listeners;
+package com.xef5000.EventMaster.listeners;
 
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;

@@ -1,18 +1,15 @@
-package com.xef5000.EventMaster.Listeners;
+package com.xef5000.EventMaster.listeners;
 
 import com.xef5000.EventMaster.EventMaster;
-import com.xef5000.EventMaster.Utils.Hologram;
-import com.xef5000.EventMaster.Utils.Shockwave.Ripple;
-import net.minecraft.server.v1_8_R3.NBTTagCompound;
+import com.xef5000.EventMaster.utils.Hologram;
+import com.xef5000.EventMaster.utils.shockwave.Ripple;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
-import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.Arrays;
@@ -62,6 +59,7 @@ public class EntityChangeBlockEventListener implements Listener {
         boolean lightning = Boolean.parseBoolean(values[4]);
         boolean hologram = Boolean.parseBoolean(values[5]);
         Location loc = event.getBlock().getLocation();
+        String listName = (event.getEntity().getCustomName().startsWith("eventmaster-meteorite-internallist")) ? values[2].split(":")[1] : null;
 
         if (shockwave) {
             Ripple rippleEffect = new Ripple(main, loc.clone().add(0, -1, 0), 7.0, 3.5, 0.15, 2);
@@ -72,14 +70,14 @@ public class EntityChangeBlockEventListener implements Listener {
             loc.getWorld().strikeLightningEffect(loc);
 
         if (hologram) {
-            Hologram holograma = new Hologram(hologramString.toString().replace("&", "§"), loc.clone().add(0.5, -0.6, 0.5));
+            Hologram holograma = new Hologram(hologramString.toString().replace("&", "§"), loc.clone().add(0.5, -0.6, 0.5), listName);
             holograma.spawn();
         }
 
         if (event.getEntity().getCustomName().startsWith("eventmaster-meteorite-internallist")) {
             // here we will need to store the meteorite's position in a permanent config file that goes through restarts
 
-            event.getBlock().setMetadata("list", new FixedMetadataValue(main, values[2].split(":")[1]));
+            event.getBlock().setMetadata("list", new FixedMetadataValue(main, listName));
         }
 
     }

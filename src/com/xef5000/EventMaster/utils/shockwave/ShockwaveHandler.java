@@ -1,4 +1,4 @@
-package com.xef5000.EventMaster.Utils.Shockwave;
+package com.xef5000.EventMaster.utils.shockwave;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,11 +9,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftFallingSand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 

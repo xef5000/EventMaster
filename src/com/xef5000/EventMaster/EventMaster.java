@@ -1,12 +1,12 @@
 package com.xef5000.EventMaster;
 
 import com.google.gson.JsonArray;
-import com.xef5000.EventMaster.Commands.MainCommand;
-import com.xef5000.EventMaster.Listeners.EntityChangeBlockEventListener;
-import com.xef5000.EventMaster.Listeners.EntitySpawnListener;
-import com.xef5000.EventMaster.Listeners.RightClickListener;
-import com.xef5000.EventMaster.Utils.Managers.ListManager;
-import com.xef5000.EventMaster.Utils.Managers.MeteoriteManager;
+import com.xef5000.EventMaster.commands.MainCommand;
+import com.xef5000.EventMaster.listeners.EntityChangeBlockEventListener;
+import com.xef5000.EventMaster.listeners.EntitySpawnListener;
+import com.xef5000.EventMaster.listeners.RightClickListener;
+import com.xef5000.EventMaster.utils.managers.ListManager;
+import com.xef5000.EventMaster.utils.managers.MeteoriteManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;

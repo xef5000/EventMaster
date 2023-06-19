@@ -1,15 +1,13 @@
-package com.xef5000.EventMaster.Utils.Managers;
+package com.xef5000.EventMaster.utils.managers;
 
 import com.google.gson.*;
 import com.xef5000.EventMaster.EventMaster;
-import com.xef5000.EventMaster.Events.Meteorite;
+import com.xef5000.EventMaster.events.Meteorite;
+import com.xef5000.EventMaster.utils.Hologram;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class MeteoriteManager {
@@ -25,6 +23,8 @@ public class MeteoriteManager {
     private EventMaster eventMaster;
     public ArrayList<Meteorite> meteorites = new ArrayList<>();
     public HashMap<String, ArrayList<Location>> activeMeteorites = new HashMap<>();
+    public HashMap<Location, Hologram> locationHologramHashMap = new HashMap<>();
+    public List<Hologram> deserializedHolograms = new ArrayList<>();
 
     public MeteoriteManager(EventMaster eventMaster) {
         this.eventMaster = eventMaster;
@@ -32,6 +32,8 @@ public class MeteoriteManager {
 
     /**Called when EventMaster#onEnable() */
     public void loadDataFile() {
+        deserializedHolograms = deserializeHolograms();
+        //System.out.println(deserializedHolograms.get(0).getListName() + " " + deserializeHolograms().get(0).getArmorStand().getCustomName());
         File directory = eventMaster.getDataFolder();
         File dataFile = new File(directory, "data.json");
         // create file it if it doesn't exist
@@ -61,10 +63,12 @@ public class MeteoriteManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        matchHolograms();
     }
 
     /**Called when EventMaster#onDisable() */
     public void flushMemoryToJson() {
+        serializeHolograms(getAllHolograms());
         File directory = eventMaster.getDataFolder();
         File dataFile = new File(directory, "data.json");
         // Empty the file or create it if it doesn't exist
@@ -150,5 +154,145 @@ public class MeteoriteManager {
 
     public ArrayList<Meteorite> getMeteorites() {
         return meteorites;
+    }
+
+    public HashMap<Location, Hologram> getLocationHologramHashMap() {
+        return locationHologramHashMap;
+    }
+
+    /**
+     * @deprecated This method is deprecated. Use the overloaded serializeHolograms(List<Hologram>) method instead.
+     */
+    @Deprecated
+    public void serializeHolograms() {
+        File file = new File(eventMaster.getDataFolder(), "holograms.ser");
+        for (Meteorite meteorite : getMeteorites()) {
+            for (Hologram hologram : meteorite.getHolograms()) {
+                try {
+                    serialize(hologram, file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+    }
+
+    @Deprecated
+    public void serialize(Object obj, File file)
+            throws IOException {
+        FileOutputStream fos = new FileOutputStream(file);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(obj);
+
+        fos.close();
+    }
+
+    public void serializeHolograms(List<Hologram> holograms) {
+        File file = new File(eventMaster.getDataFolder(), "holograms.ser");
+        try {
+            file.createNewFile();
+            FileOutputStream fos = new FileOutputStream(file);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(holograms);
+            oos.close();
+            fos.close();
+            System.out.println("Holograms serialized and saved as holograms.ser");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Hologram> getAllHolograms() {
+        List<Hologram> output = new ArrayList<>();
+        for (Meteorite meteorite : getMeteorites()) {
+            output.addAll(meteorite.getHolograms());
+        }
+        return output;
+    }
+
+    /**
+     * @deprecated This method is deprecated. Use the deserializeHolograms() method instead.
+     */
+    @Deprecated
+    public Object deserialize(File file) throws IOException,
+            ClassNotFoundException {
+        FileInputStream fis = new FileInputStream(file);
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        Object obj = ois.readObject();
+        ois.close();
+        return obj;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Hologram> deserializeHolograms() {
+        List<Hologram> holograms = new ArrayList<>();
+        File file = new File(eventMaster.getDataFolder(), "holograms.ser");
+
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+                return holograms;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else if (file.length() == 0) {
+            return holograms;
+        }
+
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            holograms = (List<Hologram>) ois.readObject();
+            ois.close();
+            fis.close();
+        } catch (EOFException e) {
+            System.out.println("You can probably ignore this");
+            e.printStackTrace();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return holograms;
+    }
+
+    public void matchHolograms() {
+        for (String listName : getActiveMeteorites().keySet()) {
+            for (Hologram hologram : deserializedHolograms) {
+                if (hologram.getListName().equals(listName)) {
+                    for (Location location : getActiveMeteorites().get(listName)) {
+                        if ((location.getX() + 0.5f)== hologram.getLocation().getX() &&
+                                (location.getY() - 0.6)== hologram.getLocation().getY() &&
+                                (location.getZ() + 0.5f) == hologram.getLocation().getZ()) {
+                            //loc.clone().add(0.5, -0.6, 0.5)
+                            locationHologramHashMap.put(location, hologram);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void addDeserializedHolograms(String listName, Meteorite meteoriteEvent) {
+        if (deserializedHolograms.isEmpty()) return;
+
+        Iterator<Hologram> iterator = deserializedHolograms.iterator();
+        while (iterator.hasNext()) {
+            Hologram hologram = iterator.next();
+            if (hologram.getListName().equals(listName)) {
+                meteoriteEvent.getHolograms().add(hologram);
+                System.out.println("Added matching hologram " + hologram.getListName());
+                iterator.remove();
+            }
+        }
+        /*
+        for (Hologram hologram : deserializedHolograms) {
+            if (hologram.getListName().equals(listName)) {
+                meteoriteEvent.getHolograms().add(hologram);
+                deserializedHolograms.remove(hologram);
+            }
+        }
+
+         */
     }
 }

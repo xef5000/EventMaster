@@ -1,4 +1,4 @@
-package com.xef5000.EventMaster.Utils.Managers;
+package com.xef5000.EventMaster.utils.managers;
 
 import com.google.gson.*;
 import com.xef5000.EventMaster.EventMaster;

@@ -1,4 +1,4 @@
-package com.xef5000.EventMaster.Utils.Shockwave;
+package com.xef5000.EventMaster.utils.shockwave;
 
 import java.util.List;
 

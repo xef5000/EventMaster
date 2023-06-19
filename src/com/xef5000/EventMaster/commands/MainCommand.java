@@ -1,10 +1,10 @@
-package com.xef5000.EventMaster.Commands;
+package com.xef5000.EventMaster.commands;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.xef5000.EventMaster.EventMaster;
-import com.xef5000.EventMaster.Events.Meteorite;
-import com.xef5000.EventMaster.Utils.Managers.ListManager;
+import com.xef5000.EventMaster.events.Meteorite;
+import com.xef5000.EventMaster.utils.managers.ListManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

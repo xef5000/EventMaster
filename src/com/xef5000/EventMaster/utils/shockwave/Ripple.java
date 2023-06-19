@@ -1,13 +1,11 @@
-package com.xef5000.EventMaster.Utils.Shockwave;
+package com.xef5000.EventMaster.utils.shockwave;
 
 import com.xef5000.EventMaster.EventMaster;
-import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.metadata.FixedMetadataValue;

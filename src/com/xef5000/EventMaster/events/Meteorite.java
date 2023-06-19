@@ -1,8 +1,8 @@
-package com.xef5000.EventMaster.Events;
+package com.xef5000.EventMaster.events;
 
 import com.xef5000.EventMaster.EventMaster;
-import com.xef5000.EventMaster.Utils.Hologram;
-import com.xef5000.EventMaster.Utils.Shockwave.Ripple;
+import com.xef5000.EventMaster.utils.Hologram;
+import com.xef5000.EventMaster.utils.shockwave.Ripple;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -11,12 +11,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.SplittableRandom;
 
 public class Meteorite implements Listener {
 
     private static boolean meteoriteLanded = false;
-    private EventMaster main;
+    private final EventMaster main;
     private boolean shockwave;
     private boolean lightning;
     private boolean hologram;
@@ -26,6 +27,7 @@ public class Meteorite implements Listener {
     private ArrayList<Location> locations;
     private ArrayList<Hologram> holograms;
     private String listName;
+    private Material material;
 
     /**Admin meteorite with custom settings*/
     public Meteorite(Location blockPosition, EventMaster eventMaster, boolean shockwave, boolean lightning, boolean hologram, boolean falling, String hologramString) {
@@ -40,6 +42,7 @@ public class Meteorite implements Listener {
         this.falling = falling;
         this.percent = 100;
         this.listName = null;
+        this.material = Material.valueOf(main.getConfig().getString("meteorite-block"));
     }
 
     /**Admin meteorite with default config settings*/
@@ -55,6 +58,7 @@ public class Meteorite implements Listener {
         this.falling = eventMaster.listManager.main.getConfig().getBoolean("meteorite-fall");
         this.percent = 100;
         this.listName = null;
+        this.material = Material.valueOf(main.getConfig().getString("meteorite-block"));
     }
 
     /**Meteorite event from a list*/
@@ -73,6 +77,9 @@ public class Meteorite implements Listener {
         this.falling = eventMaster.listManager.main.getConfig().getBoolean("meteorite-lists." + listName + ".meteorite-fall");
         this.percent = eventMaster.listManager.main.getConfig().getInt("meteorite-lists." + listName + ".percent-land");
         this.listName = listName;
+        this.material = Material.valueOf(eventMaster.listManager.main.getConfig().getString("meteorite-lists." + listName + ".meteorite-block"));
+
+        addDeserializedHolograms(listName);
     }
 
     /**Method for sending meteorites in list event*/
@@ -106,7 +113,7 @@ public class Meteorite implements Listener {
                 fallingBlock.setDropItem(false);
                 main.meteoriteManager.addLocation(listName, loc);
             } else {
-                world.getBlockAt(loc).setType(Material.valueOf(main.getConfig().getString("meteorite-block")));
+                world.getBlockAt(loc).setType(material);
                 if (shockwave) {
                     Ripple rippleEffect = new Ripple(main, loc.clone().add(0, -1, 0), 7.0, 3.5, 0.15, 2);
                     rippleEffect.runTaskTimer(main, 10L, 1L);
@@ -116,10 +123,11 @@ public class Meteorite implements Listener {
                     world.strikeLightningEffect(loc);
 
                 if (hologram) {
-                    Hologram holograma = new Hologram(hologramString.replace("&", "§"), loc.clone().add(0.5, -0.6, 0.5));
+                    Hologram holograma = new Hologram(hologramString.replace("&", "§"), loc.clone().add(0.5, -0.6, 0.5), listName);
                     holograma.spawn();
                     holograms.add(holograma);
                 }
+                System.out.println("Added to " + listName + " " + loc);
                 main.meteoriteManager.addLocation(listName, loc);
             }
 /*
@@ -148,7 +156,7 @@ public class Meteorite implements Listener {
 
         if (this.falling) {
             Location newLoc = loc.clone().add(0, 5, 0);
-            FallingBlock fallingBlock = world.spawnFallingBlock(newLoc, Material.valueOf(main.getConfig().getString("meteorite-block")), (byte) 0);
+            FallingBlock fallingBlock = world.spawnFallingBlock(newLoc, material, (byte) 0);
             fallingBlock.setTicksLived(1);
 
             String stringBuilder = "eventmaster-meteorite-internal" +
@@ -171,7 +179,7 @@ public class Meteorite implements Listener {
                 world.strikeLightningEffect(loc);
 
             if (hologram) {
-                Hologram holograma = new Hologram(hologramString.replace("&", "§"), loc.clone().add(0.5, -0.6, 0.5));
+                Hologram holograma = new Hologram(hologramString.replace("&", "§"), loc.clone().add(0.5, -0.6, 0.5), listName);
                 holograma.spawn();
             }
             main.meteoriteManager.addLocation("default", loc);
@@ -272,5 +280,18 @@ public class Meteorite implements Listener {
 
     public String getListName() {
         return listName;
+    }
+
+    private void addDeserializedHolograms(String listName) {
+        main.meteoriteManager.addDeserializedHolograms(listName, this);
+        /*
+        if (deserializedHolograms.isEmpty()) return;
+        for (Hologram hologram : deserializedHolograms) {
+            if (hologram.getListName().equals(listName)) {
+                holograms.add(hologram);
+            }
+        }
+
+         */
     }
 }
