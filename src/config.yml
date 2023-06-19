@@ -12,14 +12,16 @@ meteorite-shockwave: true
 meteorite-fall: true
 
 meteorite-lists:
-  ExampleList: #Name must correspond to json file
+  # Name must correspond to json file
+  ExampleList:
     meteorite-hologram-text: "&dMeteorite from example list"
     meteorite-block: OBSIDIAN
     meteorite-hologram: true
     meteorite-lightning: false
     meteorite-shockwave: true
     meteorite-fall: true
-    percent-land: 85 #What's the chance for a meteorite to land during an event at every spot
+    # What's the chance for a meteorite to land during an event at every spot
+    percent-land: 85
     loot:
       # - percent:amt:item
       # EXAMPLE 10:1-2:DIAMOND_ORE

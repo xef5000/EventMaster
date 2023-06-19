@@ -1,13 +1,16 @@
 package com.xef5000.EventMaster.Utils.Shockwave;
 
 import com.xef5000.EventMaster.EventMaster;
+import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -49,8 +52,12 @@ public class Ripple extends BukkitRunnable {
             for (int i = 0; i < height; i++) {
                 Location newLoc = new Location(world, x + dx, y + i, z + dz);
                 FallingBlock fallingBlock = (FallingBlock) world.spawnEntity(newLoc, EntityType.FALLING_BLOCK);
+                fallingBlock.setMetadata("OrigPos", new FixedMetadataValue(plugin, new int[]{newLoc.getBlockX(), newLoc.getBlockY(), newLoc.getBlockZ()}));
+
+
                 fallingBlock.setVelocity(new Vector(0, 0.2, 0));
                 fallingBlock.setDropItem(false);
+                fallingBlock.setCustomName("eventmaster-meteorite-shockwave");
             }
 
 
@@ -76,6 +83,7 @@ public class Ripple extends BukkitRunnable {
         Vector blockLocation;
         final Vector measureVector = loc.toVector();
 
+        blocks.add(world.getBlockAt(loc).getState());
         for(int y = 0; y<=height; y++) {
             for(double x = -radius; x<radius; x++) {
                 for(double z = -radius; z<radius; z++) {

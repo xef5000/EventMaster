@@ -1,22 +1,16 @@
 package com.xef5000.EventMaster.Events;
 
 import com.xef5000.EventMaster.EventMaster;
-import com.xef5000.EventMaster.ListManager;
 import com.xef5000.EventMaster.Utils.Hologram;
 import com.xef5000.EventMaster.Utils.Shockwave.Ripple;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftFallingSand;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.SplittableRandom;
 
 public class Meteorite implements Listener {
@@ -30,6 +24,8 @@ public class Meteorite implements Listener {
     private boolean falling;
     private int percent;
     private ArrayList<Location> locations;
+    private ArrayList<Hologram> holograms;
+    private String listName;
 
     /**Admin meteorite with custom settings*/
     public Meteorite(Location blockPosition, EventMaster eventMaster, boolean shockwave, boolean lightning, boolean hologram, boolean falling, String hologramString) {
@@ -40,8 +36,10 @@ public class Meteorite implements Listener {
         this.lightning = lightning;
         this.hologram = hologram;
         this.hologramString = hologramString;
+        this.holograms = new ArrayList<>();
         this.falling = falling;
         this.percent = 100;
+        this.listName = null;
     }
 
     /**Admin meteorite with default config settings*/
@@ -53,8 +51,10 @@ public class Meteorite implements Listener {
         this.lightning = eventMaster.listManager.main.getConfig().getBoolean("meteorite-lightning");
         this.hologram = eventMaster.listManager.main.getConfig().getBoolean("meteorite-hologram");
         this.hologramString = eventMaster.listManager.main.getConfig().getString("meteorite-hologram-text");
+        this.holograms = new ArrayList<>();
         this.falling = eventMaster.listManager.main.getConfig().getBoolean("meteorite-fall");
         this.percent = 100;
+        this.listName = null;
     }
 
     /**Meteorite event from a list*/
@@ -69,8 +69,10 @@ public class Meteorite implements Listener {
         this.lightning = eventMaster.listManager.main.getConfig().getBoolean("meteorite-lists." + listName + ".meteorite-lightning");
         this.hologram = eventMaster.listManager.main.getConfig().getBoolean("meteorite-lists." + listName + ".meteorite-hologram");
         this.hologramString = eventMaster.listManager.main.getConfig().getString("meteorite-lists." + listName + ".meteorite-hologram-text");
+        this.holograms = new ArrayList<>();
         this.falling = eventMaster.listManager.main.getConfig().getBoolean("meteorite-lists." + listName + ".meteorite-fall");
         this.percent = eventMaster.listManager.main.getConfig().getInt("meteorite-lists." + listName + ".percent-land");
+        this.listName = listName;
     }
 
     /**Method for sending meteorites in list event*/
@@ -92,7 +94,8 @@ public class Meteorite implements Listener {
                 fallingBlock.setTicksLived(1);
 
 
-                String stringBuilder = "eventmaster-meteorite-internal" +
+                String stringBuilder = "eventmaster-meteorite-internallist:" +
+                        (listName) +
                         (shockwave ? "-true" : "-false") +
                         (lightning ? "-true" : "-false") +
                         (hologram ? "-true-" : "-false") +
@@ -101,6 +104,7 @@ public class Meteorite implements Listener {
                 fallingBlock.setCustomName(stringBuilder);
                 fallingBlock.setVelocity(new Vector(0, -0.2, 0));
                 fallingBlock.setDropItem(false);
+                main.meteoriteManager.addLocation(listName, loc);
             } else {
                 world.getBlockAt(loc).setType(Material.valueOf(main.getConfig().getString("meteorite-block")));
                 if (shockwave) {
@@ -114,7 +118,9 @@ public class Meteorite implements Listener {
                 if (hologram) {
                     Hologram holograma = new Hologram(hologramString.replace("&", "§"), loc.clone().add(0.5, -0.6, 0.5));
                     holograma.spawn();
+                    holograms.add(holograma);
                 }
+                main.meteoriteManager.addLocation(listName, loc);
             }
 /*
             if (shockwave) {
@@ -168,6 +174,7 @@ public class Meteorite implements Listener {
                 Hologram holograma = new Hologram(hologramString.replace("&", "§"), loc.clone().add(0.5, -0.6, 0.5));
                 holograma.spawn();
             }
+            main.meteoriteManager.addLocation("default", loc);
         }
 /*
         if (shockwave) {
@@ -255,4 +262,15 @@ public class Meteorite implements Listener {
 
      */
 
+    public ArrayList<Location> getLocations() {
+        return locations;
+    }
+
+    public ArrayList<Hologram> getHolograms() {
+        return holograms;
+    }
+
+    public String getListName() {
+        return listName;
+    }
 }

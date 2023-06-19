@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.xef5000.EventMaster.EventMaster;
 import com.xef5000.EventMaster.Events.Meteorite;
-import com.xef5000.EventMaster.ListManager;
+import com.xef5000.EventMaster.Utils.Managers.ListManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,11 +14,17 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 
 public class MainCommand implements CommandExecutor {
     public ListManager listManager;
     public EventMaster eventMaster;
+    public ArrayList<String> blacklistedListNames = new ArrayList<String>() {{
+        // ONLY USE LOWER CASE LETTERS.
+        add("default");
+    }};
 
     public MainCommand(ListManager listManager, EventMaster eventMaster) {
         this.listManager = listManager;
@@ -68,7 +74,12 @@ public class MainCommand implements CommandExecutor {
                     commandSender.sendMessage(EventMaster.COLOR_PREFIX + " §cERROR: This list already exists! §f" + args[3]);
                     return false;
                 }
+                if (blacklistedListNames.contains(args[3].toLowerCase())) {
+                    commandSender.sendMessage(EventMaster.COLOR_PREFIX + " §cERROR: You cannot name a list this way! §f" + args[3]);
+                    return false;
+                }
                 listManager.createCustomList(args[3], new JsonArray());
+                createDefaultListSettings(args[3]);
                 commandSender.sendMessage(EventMaster.COLOR_PREFIX + " §aSuccessfuly created a the list §f" + args[3]);
                 return true;
             }
@@ -142,6 +153,7 @@ public class MainCommand implements CommandExecutor {
                     }
                     Meteorite meteorite = new Meteorite(listName, eventMaster);
                     meteorite.sendMeteorites();
+                    eventMaster.meteoriteManager.addMeteorite(meteorite);
                     //Meteorite.startEvent(listManager, listName);
                     return true;
                 }
@@ -173,5 +185,17 @@ public class MainCommand implements CommandExecutor {
         player.sendMessage("§6/eventmaster help §f- §7Shows this help menu");
         player.sendMessage("§6/eventmaster event §f- §7Lists all possible events");
         player.sendMessage("§f---------------");
+    }
+
+    private void createDefaultListSettings(String listName) {
+        eventMaster.getConfig().set("meteorite-lists." + listName + ".meteorite-hologram-text", "&dMeteorite");
+        eventMaster.getConfig().set("meteorite-lists." + listName + ".meteorite-block", "OBSIDIAN");
+        eventMaster.getConfig().set("meteorite-lists." + listName + ".meteorite-hologram", true);
+        eventMaster.getConfig().set("meteorite-lists." + listName + ".meteorite-lightning", true);
+        eventMaster.getConfig().set("meteorite-lists." + listName + ".meteorite-shockwave", false);
+        eventMaster.getConfig().set("meteorite-lists." + listName + ".meteorite-fall", false);
+        eventMaster.getConfig().set("meteorite-lists." + listName + ".percent-land", 100);
+        eventMaster.getConfig().set("meteorite-lists." + listName + ".loot", new ArrayList<>(Arrays.asList("10:1-2:DIAMOND_ORE", "75:10-16:DIRT")));
+        eventMaster.saveConfig();
     }
 }

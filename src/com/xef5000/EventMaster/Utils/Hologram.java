@@ -8,6 +8,7 @@ public class Hologram {
 
     private String text;
     private Location location;
+    private ArmorStand armorStand;
 
     public Hologram(String text, Location location) {
         this.text = text;
@@ -20,5 +21,18 @@ public class Hologram {
         hologram.setVisible(false);
         hologram.setCustomNameVisible(true);
         hologram.setGravity(false);
+        this.armorStand = hologram;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public ArmorStand getArmorStand() {
+        return armorStand;
     }
 }

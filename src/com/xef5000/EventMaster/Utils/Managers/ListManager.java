@@ -1,8 +1,10 @@
-package com.xef5000.EventMaster;
+package com.xef5000.EventMaster.Utils.Managers;
 
 import com.google.gson.*;
+import com.xef5000.EventMaster.EventMaster;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 
 import java.io.*;
 import java.util.*;
@@ -113,7 +115,10 @@ public class ListManager {
 
     public List<File> listFilesForFolder(final File folder) {
         ArrayList<File> files = new ArrayList<>();
-        for (final File fileEntry : folder.listFiles()) {
+        File[] fileEntries = folder.listFiles();
+        if (fileEntries == null)
+            return files;
+        for (final File fileEntry : fileEntries) {
             if (fileEntry.isDirectory()) {
                 listFilesForFolder(fileEntry);
             } else {
@@ -131,24 +136,33 @@ public class ListManager {
         LinkedList<Location> locations = new LinkedList<>();
         JsonArray jsonArray = lists.get(listName);
 
-        String worldname = null;
-
-        for (JsonElement jsonElement : jsonArray) {
-            if (jsonElement.isJsonObject() && jsonElement.getAsJsonObject().get("world").getAsJsonPrimitive().getAsString() != null)
-                worldname = jsonElement.getAsJsonObject().get("world").getAsJsonPrimitive().getAsString();
-
-        }
-
         for (int i = 0; i < jsonArray.size(); i++) {
             if (!jsonArray.get(i).isJsonArray()) continue;
             JsonArray locationArray = (JsonArray) jsonArray.get(i);
             int x = locationArray.get(0).getAsInt();
             int y = locationArray.get(1).getAsInt();
             int z = locationArray.get(2).getAsInt();
-            locations.add(new Location(Bukkit.getWorld(worldname), x, y, z));
+            locations.add(new Location(getWorldOfList(listName), x, y, z));
         }
 
         return locations;
+    }
+
+    public World getWorldOfList(String listName) {
+        if (!lists.containsKey(listName)) {
+            System.out.println("Error: list does not exist");
+            return null;
+        }
+        JsonArray jsonArray = lists.get(listName);
+        String worldname = null;
+
+        for (JsonElement jsonElement : jsonArray) {
+            if (jsonElement.isJsonObject() && jsonElement.getAsJsonObject().get("world").getAsJsonPrimitive().getAsString() != null) {
+                worldname = jsonElement.getAsJsonObject().get("world").getAsJsonPrimitive().getAsString();
+                return Bukkit.getWorld(worldname);
+            }
+        }
+        return null;
     }
 
     public void save() {

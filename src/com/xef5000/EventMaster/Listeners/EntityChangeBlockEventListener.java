@@ -3,11 +3,19 @@ package com.xef5000.EventMaster.Listeners;
 import com.xef5000.EventMaster.EventMaster;
 import com.xef5000.EventMaster.Utils.Hologram;
 import com.xef5000.EventMaster.Utils.Shockwave.Ripple;
+import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntitySpawnEvent;
+import org.bukkit.metadata.FixedMetadataValue;
+
+import java.util.Arrays;
 
 public class EntityChangeBlockEventListener implements Listener {
 
@@ -20,7 +28,29 @@ public class EntityChangeBlockEventListener implements Listener {
     // For meteorite events
     @EventHandler
     public void onEntityChangeBlockEvent(EntityChangeBlockEvent event) {
-        if (!(event.getEntityType() == EntityType.FALLING_BLOCK && event.getEntity().getCustomName().startsWith("eventmaster-meteorite-internal"))) return;
+        if (event.getEntityType() == EntityType.FALLING_BLOCK && event.getEntity().getCustomName() != null && event.getEntity().getCustomName().equalsIgnoreCase("eventmaster-meteorite-shockwave")) {
+            System.out.println(event.getTo() + " -> " + ((FallingBlock)event.getEntity()).getMaterial());
+            if (event.getTo() == Material.AIR) {
+                event.getBlock().setType(Material.STONE);
+
+            } else {
+                event.getEntity().remove();
+                Location loc = event.getBlock().getLocation();
+                int[] origloc = getNMSOrigLoc(event);
+                if (loc.getBlockX() == origloc[0] && loc.getBlockY() == origloc[1] && loc.getBlockZ() == origloc[2]) {
+                    //Block landed at same position it started from
+                } else {
+                    //Block landed at other random spot
+                    Location origLoc = new Location(loc.getWorld(), origloc[0], origloc[1], origloc[2]);
+                    origLoc.getBlock().setType(((FallingBlock) event.getEntity()).getMaterial());
+                    event.setCancelled(true);
+                }
+
+            }
+
+            return;
+        }
+        if (!((event.getEntityType() == EntityType.FALLING_BLOCK && event.getEntity().getCustomName() != null) &&  (event.getEntity().getCustomName().startsWith("eventmaster-meteorite-internal") || event.getEntity().getCustomName().startsWith("eventmaster-meteorite-internallist")) )) return;
         // eventmaster-meteorite-internal-true-true-true-Text
         // just-an-id-SHOCKWAVE-LIGHTNING-HOLOGRAM-HOLOGRAM_TEXT
         String[] values = event.getEntity().getCustomName().split("-");
@@ -46,5 +76,25 @@ public class EntityChangeBlockEventListener implements Listener {
             holograma.spawn();
         }
 
+        if (event.getEntity().getCustomName().startsWith("eventmaster-meteorite-internallist")) {
+            // here we will need to store the meteorite's position in a permanent config file that goes through restarts
+
+            event.getBlock().setMetadata("list", new FixedMetadataValue(main, values[2].split(":")[1]));
+        }
+
     }
+
+    private int[] getNMSOrigLoc(EntityChangeBlockEvent event) {
+        //FallingBlock fallingBlock = (FallingBlock) event.getEntity();
+        //CraftEntity craftEntity = (CraftEntity) fallingBlock;
+        //net.minecraft.server.v1_8_R3.Entity nmsEntity = craftEntity.getHandle();
+        //NBTTagCompound nbt = new NBTTagCompound();
+        //nmsEntity.e(nbt); // Save entity data to NBT compound
+        //System.out.println("NBT: " + nbt);
+        System.out.println(Arrays.toString(((int[]) event.getEntity().getMetadata("OrigPos").get(0).value())));
+        //return nbt.getIntArray("OrigBlock");
+        return ((int[]) event.getEntity().getMetadata("OrigPos").get(0).value());
+    }
+
+
 }
