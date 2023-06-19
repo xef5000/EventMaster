@@ -84,14 +84,13 @@ public class Meteorite implements Listener {
 
     /**Method for sending meteorites in list event*/
     public void sendMeteorites() {
-        System.out.println("Sending meteorites.....");
+        System.out.println("[EventMaster] Sending meteorites.....");
         for (Location loc : locations) {
-            //System.out.println("LOC");
             int randomInt = new SplittableRandom().nextInt(1, 101);
-            System.out.println("Generated #" + randomInt + "(" + percent + ") " + !(randomInt <= percent));
+            //System.out.println("Generated #" + randomInt + "(" + percent + ") " + !(randomInt <= percent));
             //int random_int = (int)Math.floor(Math.random() * (100 - 1) + 1);
             if (!(randomInt <= percent)) continue;
-            System.out.println("Percentage test passed");
+            //System.out.println("Percentage test passed");
             // From here we only have meteorites that we know we will spawn
             World world = loc.getWorld();
 
@@ -130,22 +129,6 @@ public class Meteorite implements Listener {
                 System.out.println("Added to " + listName + " " + loc);
                 main.meteoriteManager.addLocation(listName, loc);
             }
-/*
-            if (shockwave) {
-                Ripple rippleEffect = new Ripple(main, loc.clone().add(0, -1, 0), 7.0, 3.5, 0.15, 2);
-                rippleEffect.runTaskTimer(main, 10L, 1L);
-            }
-
-            if (lightning)
-                world.strikeLightningEffect(loc);
-
-            if (hologram) {
-                Hologram holograma = new Hologram(hologramString.replace("&", "§"), loc.clone().add(0.5, -0.6, 0.5));
-                holograma.spawn();
-            }
-
- */
-
 
         }
     }
@@ -184,21 +167,6 @@ public class Meteorite implements Listener {
             }
             main.meteoriteManager.addLocation("default", loc);
         }
-/*
-        if (shockwave) {
-            Ripple rippleEffect = new Ripple(main, loc.clone().add(0, -1, 0), 7.0, 3.5, 0.15, 2);
-            rippleEffect.runTaskTimer(main, 10L, 1L);
-        }
-
-        if (lightning)
-            world.strikeLightningEffect(loc);
-
-        if (hologram) {
-            Hologram holograma = new Hologram(hologramString.replace("&", "§"), loc.clone().add(0.5, -0.6, 0.5));
-            holograma.spawn();
-        }
-
- */
         return this;
     }
 
@@ -233,43 +201,6 @@ public class Meteorite implements Listener {
 
     }
 
-    /*
-    public static void startEvent(ListManager listManager, String listName) {
-        LinkedList<Location> locations = listManager.getLocationsFromList(listName);
-        int percent = listManager.main.getConfig().getInt("meteorite-lists." + listName + ".percent-land");
-        boolean shockwave = listManager.main.getConfig().getBoolean("meteorite-lists." + listName + ".meteorite-shockwave");
-        boolean lightning = listManager.main.getConfig().getBoolean("meteorite-lists." + listName + ".meteorite-lightning");
-        boolean hologram = listManager.main.getConfig().getBoolean("meteorite-lists." + listName + ".meteorite-hologram");
-
-        for (Location loc : locations) {
-            int random_int = (int)Math.floor(Math.random() * (100 - 1) + 1);
-            if (random_int <= percent)
-                sendMeteorite(loc, listManager.main, shockwave, lightning, hologram, true);
-        }
-    }
-
-    @EventHandler
-    public void onEntityChangeBlockEvent(EntityChangeBlockEvent event) {
-        if (event.getEntityType() == EntityType.FALLING_BLOCK && event.getEntity().getCustomName().equals("eventmaster-meteorite-internal")) return;
-        if (shockwave) {
-            //ShockwaveHandler sh = new ShockwaveHandler(eventMaster, 5);
-            //sh.createShockwave(blockPosition.clone().add(0, -1, 0));
-
-            Ripple rippleEffect = new Ripple(eventMaster, blockPosition.clone().add(0, -1, 0), 7.0, 3.5, 0.15, 2);
-            rippleEffect.runTaskTimer(eventMaster, 10L, 1L);
-        }
-
-
-        if (lightning) world.strikeLightningEffect(blockPosition);
-
-        if (hologram) {
-            Hologram holograma = new Hologram(eventMaster.getConfig().getString("meteorite-hologram-text").replace("&", "§"), blockPosition.clone().add(0.5, -0.6, 0.5));
-            holograma.spawn();
-        }
-    }
-
-     */
-
     public ArrayList<Location> getLocations() {
         return locations;
     }
@@ -284,14 +215,5 @@ public class Meteorite implements Listener {
 
     private void addDeserializedHolograms(String listName) {
         main.meteoriteManager.addDeserializedHolograms(listName, this);
-        /*
-        if (deserializedHolograms.isEmpty()) return;
-        for (Hologram hologram : deserializedHolograms) {
-            if (hologram.getListName().equals(listName)) {
-                holograms.add(hologram);
-            }
-        }
-
-         */
     }
 }

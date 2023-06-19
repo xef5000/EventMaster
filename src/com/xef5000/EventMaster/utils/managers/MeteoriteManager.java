@@ -252,8 +252,6 @@ public class MeteoriteManager {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        System.out.println("Holograms size: " + holograms.size());
-        System.out.println("Holograms-cleared size: " + removeDuplicates(holograms).size());
 
         return removeDuplicates(holograms);
     }
@@ -279,7 +277,6 @@ public class MeteoriteManager {
                         if ((location.getX() + 0.5f)== hologram.getLocation().getX() &&
                                 (location.getY() - 0.6)== hologram.getLocation().getY() &&
                                 (location.getZ() + 0.5f) == hologram.getLocation().getZ()) {
-                            //loc.clone().add(0.5, -0.6, 0.5)
                             locationHologramHashMap.put(location, hologram);
                         }
                     }
@@ -296,18 +293,8 @@ public class MeteoriteManager {
             Hologram hologram = iterator.next();
             if (hologram.getListName().equals(listName)) {
                 meteoriteEvent.getHolograms().add(hologram);
-                System.out.println("Added matching hologram " + hologram.getListName());
                 iterator.remove();
             }
         }
-        /*
-        for (Hologram hologram : deserializedHolograms) {
-            if (hologram.getListName().equals(listName)) {
-                meteoriteEvent.getHolograms().add(hologram);
-                deserializedHolograms.remove(hologram);
-            }
-        }
-
-         */
     }
 }

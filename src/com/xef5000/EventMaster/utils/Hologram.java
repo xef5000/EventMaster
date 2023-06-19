@@ -79,7 +79,6 @@ public class Hologram implements Serializable {
         double z = in.readDouble();
 
         location = new Location(Bukkit.getWorld(worldName), x, y, z);
-        System.out.println("LOC: " + location);
 
 
         for (Entity entity : getNearbyEntities(location, 1)) {
@@ -88,7 +87,6 @@ public class Hologram implements Serializable {
                     entity.getLocation().getY() == location.getY() &&
                     entity.getLocation().getZ() == location.getZ()) {
                 armorStand = (ArmorStand) entity;
-                System.out.println("ADDED ARMOR STAND CNAME:" + armorStand.getCustomName());
                 break;
             }
         }
