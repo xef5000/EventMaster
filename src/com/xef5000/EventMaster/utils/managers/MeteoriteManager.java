@@ -252,8 +252,23 @@ public class MeteoriteManager {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+        System.out.println("Holograms size: " + holograms.size());
+        System.out.println("Holograms-cleared size: " + removeDuplicates(holograms).size());
 
-        return holograms;
+        return removeDuplicates(holograms);
+    }
+
+    public List<Hologram> removeDuplicates(List<Hologram> input) {
+        ArrayList<Hologram> inputt = new ArrayList<>(input); // Step 1, removing duplicates
+        List<Hologram> output = new ArrayList<>();
+        String lastNameAdded = "";
+        for (Hologram hologram : inputt) {
+            if (!hologram.getListName().equalsIgnoreCase(lastNameAdded)) {
+                output.add(hologram);
+                lastNameAdded = hologram.getListName();
+            }
+        }
+        return output;
     }
 
     public void matchHolograms() {

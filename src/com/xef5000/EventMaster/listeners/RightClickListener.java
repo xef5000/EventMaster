@@ -37,7 +37,6 @@ public class RightClickListener implements Listener {
                             loc.getBlockZ() == event.getClickedBlock().getLocation().getBlockZ()) {
                         listName = name;
                         location = loc.clone();
-                        soutInfo(event);
                         meteoriteEventLoop:
                         for (Meteorite meteoriteEvent : eventMaster.meteoriteManager.getMeteorites()) {
                             for (Location locc : meteoriteEvent.getLocations()) {
@@ -77,6 +76,7 @@ public class RightClickListener implements Listener {
                             hologram.getLocation().getZ() == (location.getZ() + 0.5f))) {
                         hologram.despawn();
                         eventMaster.meteoriteManager.getLocationHologramHashMap().remove(loc);
+                        eventMaster.meteoriteManager.deserializedHolograms.remove(hologram);
                         System.out.println("DESPAWNED - matched with the list");
                         break;
                     }
@@ -90,8 +90,4 @@ public class RightClickListener implements Listener {
         }
     }
 
-
-    private void soutInfo(PlayerInteractEvent event) {
-        eventMaster.meteoriteManager.getMeteorites().forEach(meteorite -> System.out.println(meteorite.getListName()));
-    }
 }
