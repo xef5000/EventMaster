@@ -196,6 +196,7 @@ public class MainCommand implements CommandExecutor {
         eventMaster.getConfig().set("meteorite-lists." + listName + ".meteorite-fall", false);
         eventMaster.getConfig().set("meteorite-lists." + listName + ".percent-land", 100);
         eventMaster.getConfig().set("meteorite-lists." + listName + ".loot", new ArrayList<>(Arrays.asList("10:1-2:DIAMOND_ORE", "75:10-16:DIRT")));
+        eventMaster.getConfig().set("meteorite-lists." + listName + ".commands", new ArrayList<>(Arrays.asList("10:me Congratulations on finding a meteorite!")));
         eventMaster.saveConfig();
     }
 }

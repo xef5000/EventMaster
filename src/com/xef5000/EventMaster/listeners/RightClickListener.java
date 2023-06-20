@@ -5,10 +5,16 @@ import com.xef5000.EventMaster.events.Meteorite;
 import com.xef5000.EventMaster.utils.Hologram;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SplittableRandom;
 
 public class RightClickListener implements Listener {
 
@@ -41,7 +47,7 @@ public class RightClickListener implements Listener {
                         for (Meteorite meteoriteEvent : eventMaster.meteoriteManager.getMeteorites()) {
                             for (Location locc : meteoriteEvent.getLocations()) {
                                 if (locc.getBlockX() == location.getBlockX() && locc.getBlockY() == location.getBlockY() && locc.getBlockZ() == location.getBlockZ()) {
-                                    System.out.println("We found the corresponding event");
+                                    //System.out.println("We found the corresponding event");
                                     meteorite = meteoriteEvent;
                                     break meteoriteEventLoop;
                                 }
@@ -62,7 +68,8 @@ public class RightClickListener implements Listener {
                     if (hologram.getLocation().getX() == (location.getX() + 0.5f) && hologram.getLocation().getY() == (location.getY() - 0.6) && hologram.getLocation().getZ() == (location.getZ() + 0.5f)) {
                         //loc.clone().add(0.5, -0.6, 0.5))
                         hologram.despawn();
-                        System.out.println("DESPAWNED - found the meteorite event");
+                        //System.out.println("DESPAWNED - found the meteorite event");
+                        giveMeteoriteRewards(event.getPlayer(), listName);
                         meteorite.getHolograms().remove(hologram);
                         meteorite.getLocations().remove(location);
                         break;
@@ -77,7 +84,8 @@ public class RightClickListener implements Listener {
                         hologram.despawn();
                         eventMaster.meteoriteManager.getLocationHologramHashMap().remove(loc);
                         eventMaster.meteoriteManager.deserializedHolograms.remove(hologram);
-                        System.out.println("DESPAWNED - matched with the list");
+                        giveMeteoriteRewards(event.getPlayer(), listName);
+                        //System.out.println("DESPAWNED - matched with the list");
                         break;
                     }
                 }
@@ -90,4 +98,33 @@ public class RightClickListener implements Listener {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    private void giveMeteoriteRewards(Player player, String listName) {
+        ArrayList<String> lootList = (ArrayList<String>) eventMaster.getConfig().getList("meteorite-lists." + listName + ".loot");
+        ArrayList<String> cmdList = (ArrayList<String>) eventMaster.getConfig().getList("meteorite-lists." + listName + ".commands");
+
+        // give items reward
+        for (String line : lootList) {
+            String[] arguments = line.split(":");
+            int randomInt = new SplittableRandom().nextInt(1, 101);
+            int percent = Integer.parseInt(arguments[0]);
+            if (!(randomInt <= percent)) continue;
+
+            int amtLow = Integer.parseInt(arguments[1].split("-")[0]);
+            int amtHigh = Integer.parseInt(arguments[1].split("-")[1]);
+            int amt = new SplittableRandom().nextInt(amtLow, amtHigh + 1);
+
+            ItemStack is = new ItemStack(Material.valueOf(arguments[2]), amt);
+            player.getInventory().addItem(is);
+        }
+
+        // execute commands
+        for (String line : cmdList) {
+            int percent = Integer.parseInt(line.split(":")[0]);
+            int randomInt = new SplittableRandom().nextInt(1, 101);
+            if (!(randomInt <= percent)) continue;
+
+            eventMaster.getServer().dispatchCommand(eventMaster.getServer().getConsoleSender(), (line.substring(line.indexOf(":") + 1).trim()));
+        }
+    }
 }

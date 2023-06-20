@@ -28,5 +28,10 @@ meteorite-lists:
       # 10% of getting diamond ore that will come in a random stack between 1 and 2
       - 10:1-2:DIAMOND_ORE
       - 75:10-16:DIRT
+    commands:
+      # - percent:command
+      # - EXAMPLE 10:me Congratulations on finding a meteorite!
+      # - 10% chance of operator executing /me Congratulations on finding a meteorite!
+      - 10:me Congratulations on finding a meteorite!
 
 
