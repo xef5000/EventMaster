@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.xef5000.EventMaster.EventMaster;
 import com.xef5000.EventMaster.events.Meteorite;
+import com.xef5000.EventMaster.utils.language.Lang;
 import com.xef5000.EventMaster.utils.managers.ListManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -42,6 +43,7 @@ public class MainCommand implements CommandExecutor {
 
         if ((args.length == 1) && args[0].equalsIgnoreCase("reload")) {
             eventMaster.reloadConfig();
+            eventMaster.loadLang();
             commandSender.sendMessage(EventMaster.COLOR_PREFIX + " §aSuccessfully reloaded the config!");
             return true;
         }
@@ -70,7 +72,8 @@ public class MainCommand implements CommandExecutor {
 
 
                     //Meteorite.sendMeteorite(location, eventMaster, eventMaster.getConfig().getBoolean("meteorite-shockwave"), eventMaster.getConfig().getBoolean("meteorite-lightning"), eventMaster.getConfig().getBoolean("meteorite-hologram"), true);
-                    Bukkit.broadcastMessage(EventMaster.COLOR_PREFIX + " §cEvent §eMétéorite at §f" + location.getX() + "§c, §f" + location.getY() + "§c, §f" + location.getZ() + " §c!");
+                    //Bukkit.broadcastMessage(EventMaster.COLOR_PREFIX + " §cEvent §eMétéorite at §f" + location.getX() + "§c, §f" + location.getY() + "§c, §f" + location.getZ() + " §c!");
+                    Bukkit.broadcastMessage(EventMaster.COLOR_PREFIX + " " + Lang.METEORITE_EVENT_ADMIN.toString().replace("%x", String.valueOf(location.getX())).replace("%y", String.valueOf(location.getY())).replace("%z", String.valueOf(location.getZ())));
                     return true;
                 } else {
                     Location location = ((Player) commandSender).getTargetBlock((Set< Material >) null, 100).getLocation();
@@ -78,6 +81,8 @@ public class MainCommand implements CommandExecutor {
                     Meteorite meteorite = new Meteorite(args[3], eventMaster, location);
                     meteorite.sendMeteorites();
                     eventMaster.meteoriteManager.addMeteorite(meteorite);
+                    Bukkit.broadcastMessage(EventMaster.COLOR_PREFIX + " " + Lang.METEORITE_EVENT_ADMIN.toString().replace("%x", String.valueOf(location.getX())).replace("%y", String.valueOf(location.getY())).replace("%z", String.valueOf(location.getZ())));
+
                 }
 
             }
@@ -172,6 +177,7 @@ public class MainCommand implements CommandExecutor {
                     meteorite.sendMeteorites();
                     eventMaster.meteoriteManager.addMeteorite(meteorite);
                     //Meteorite.startEvent(listManager, listName);
+                    Bukkit.broadcastMessage(EventMaster.COLOR_PREFIX + " " + Lang.METEORITE_EVENT_LIST.toString().replace("%list", listName));
                     return true;
                 }
             }
