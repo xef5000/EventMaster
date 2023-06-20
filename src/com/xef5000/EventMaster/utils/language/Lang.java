@@ -9,7 +9,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
  */
 public enum Lang {
     METEORITE_EVENT_ADMIN("meteorite-event-admin", "&cEvent meteorite at %x, %y, %z"),
-    METEORITE_EVENT_LIST("meteorite-event-list", "&cEvent meteorite with list %list");
+    METEORITE_EVENT_LIST("meteorite-event-list", "&cEvent meteorite with list %list"),
+    METEORITE_CLAIM("meteorite-claim", "&aYou claimed a meteorite of list %list");
 
     private String path;
     private String def;

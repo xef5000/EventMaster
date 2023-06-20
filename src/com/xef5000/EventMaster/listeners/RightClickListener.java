@@ -3,6 +3,7 @@ package com.xef5000.EventMaster.listeners;
 import com.xef5000.EventMaster.EventMaster;
 import com.xef5000.EventMaster.events.Meteorite;
 import com.xef5000.EventMaster.utils.Hologram;
+import com.xef5000.EventMaster.utils.language.Lang;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -62,11 +63,10 @@ public class RightClickListener implements Listener {
                     }
                 }
             }
-            System.out.println("Is location null? " + (location==null));
             if (location == null) return;
             assert listName != null;
             // When player right clicks block, and it's a meteorite, from now on we will have the correct listname of that block.
-            event.getPlayer().sendMessage("You clicked a meteorite of the list " + listName);
+            event.getPlayer().sendMessage(EventMaster.COLOR_PREFIX + " " + Lang.METEORITE_CLAIM.toString().replace("%list", listName));
             if (meteorite != null) {
                 for (Hologram hologram : meteorite.getHolograms()) {
                     if (hologram.getLocation().getX() == (location.getX() + 0.5f) && hologram.getLocation().getY() == (location.getY() - 0.6) && hologram.getLocation().getZ() == (location.getZ() + 0.5f)) {

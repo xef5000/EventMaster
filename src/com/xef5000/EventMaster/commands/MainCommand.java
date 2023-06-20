@@ -73,7 +73,7 @@ public class MainCommand implements CommandExecutor {
 
                     //Meteorite.sendMeteorite(location, eventMaster, eventMaster.getConfig().getBoolean("meteorite-shockwave"), eventMaster.getConfig().getBoolean("meteorite-lightning"), eventMaster.getConfig().getBoolean("meteorite-hologram"), true);
                     //Bukkit.broadcastMessage(EventMaster.COLOR_PREFIX + " §cEvent §eMétéorite at §f" + location.getX() + "§c, §f" + location.getY() + "§c, §f" + location.getZ() + " §c!");
-                    Bukkit.broadcastMessage(EventMaster.COLOR_PREFIX + " " + Lang.METEORITE_EVENT_ADMIN.toString().replace("%x", String.valueOf(location.getX())).replace("%y", String.valueOf(location.getY())).replace("%z", String.valueOf(location.getZ())));
+                    Bukkit.broadcastMessage(EventMaster.COLOR_PREFIX + " " + Lang.METEORITE_EVENT_ADMIN.toString().replace("%x", String.valueOf(location.getBlockX())).replace("%y", String.valueOf(location.getBlockY())).replace("%z", String.valueOf(location.getBlockZ())));
                     return true;
                 } else {
                     Location location = ((Player) commandSender).getTargetBlock((Set< Material >) null, 100).getLocation();
@@ -81,7 +81,7 @@ public class MainCommand implements CommandExecutor {
                     Meteorite meteorite = new Meteorite(args[3], eventMaster, location);
                     meteorite.sendMeteorites();
                     eventMaster.meteoriteManager.addMeteorite(meteorite);
-                    Bukkit.broadcastMessage(EventMaster.COLOR_PREFIX + " " + Lang.METEORITE_EVENT_ADMIN.toString().replace("%x", String.valueOf(location.getX())).replace("%y", String.valueOf(location.getY())).replace("%z", String.valueOf(location.getZ())));
+                    Bukkit.broadcastMessage(EventMaster.COLOR_PREFIX + " " + Lang.METEORITE_EVENT_ADMIN.toString().replace("%x", String.valueOf(location.getBlockX())).replace("%y", String.valueOf(location.getBlockY())).replace("%z", String.valueOf(location.getBlockZ())));
 
                 }
 
