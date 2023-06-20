@@ -40,6 +40,12 @@ public class MainCommand implements CommandExecutor {
 
         if (!(commandSender.hasPermission("eventmaster.command.main"))) return false;
 
+        if ((args.length == 1) && args[0].equalsIgnoreCase("reload")) {
+            eventMaster.reloadConfig();
+            commandSender.sendMessage(EventMaster.COLOR_PREFIX + " §aSuccessfully reloaded the config!");
+            return true;
+        }
+
         if ((args.length == 1 && args[0].equalsIgnoreCase("help") ) || !(args.length >= 1)) {
             sendHelpMessage(commandSender);
             return true;
@@ -53,18 +59,27 @@ public class MainCommand implements CommandExecutor {
 
                 return true;
             }
-            if (args.length == 3 && args[0].equalsIgnoreCase("event") && args[1].equalsIgnoreCase("meteorite") && args[2].equalsIgnoreCase("admin")) {
+            if ((args.length == 3 || args.length == 4) && args[0].equalsIgnoreCase("event") && args[1].equalsIgnoreCase("meteorite") && args[2].equalsIgnoreCase("admin")) {
                 //EVENT METEORITE - admin event
-                World world = ((Player) commandSender).getWorld();
-                Location location = ((Player) commandSender).getTargetBlock((Set< Material >) null, 100).getLocation();
-                location.setY(location.getY() + 1);
-                Meteorite meteorite = new Meteorite(location, eventMaster);
-                meteorite.sendMeteorite();
+                if (args.length == 3) {
+                    World world = ((Player) commandSender).getWorld();
+                    Location location = ((Player) commandSender).getTargetBlock((Set< Material >) null, 100).getLocation();
+                    location.setY(location.getY() + 1);
+                    Meteorite meteorite = new Meteorite(location, eventMaster);
+                    meteorite.sendMeteorite();
 
 
-                //Meteorite.sendMeteorite(location, eventMaster, eventMaster.getConfig().getBoolean("meteorite-shockwave"), eventMaster.getConfig().getBoolean("meteorite-lightning"), eventMaster.getConfig().getBoolean("meteorite-hologram"), true);
-                Bukkit.broadcastMessage(EventMaster.COLOR_PREFIX + " §cEvent §eMétéorite at §f" + location.getX() + "§c, §f" + location.getY() + "§c, §f" + location.getZ() + " §c!");
-                return true;
+                    //Meteorite.sendMeteorite(location, eventMaster, eventMaster.getConfig().getBoolean("meteorite-shockwave"), eventMaster.getConfig().getBoolean("meteorite-lightning"), eventMaster.getConfig().getBoolean("meteorite-hologram"), true);
+                    Bukkit.broadcastMessage(EventMaster.COLOR_PREFIX + " §cEvent §eMétéorite at §f" + location.getX() + "§c, §f" + location.getY() + "§c, §f" + location.getZ() + " §c!");
+                    return true;
+                } else {
+                    Location location = ((Player) commandSender).getTargetBlock((Set< Material >) null, 100).getLocation();
+                    location.setY(location.getY() + 1);
+                    Meteorite meteorite = new Meteorite(args[3], eventMaster, location);
+                    meteorite.sendMeteorites();
+                    eventMaster.meteoriteManager.addMeteorite(meteorite);
+                }
+
             }
             if (args[0].equalsIgnoreCase("event") && args[1].equalsIgnoreCase("meteorite") && args[2].equalsIgnoreCase("createlist")) {
                 //EVENT METEORITE - createlist
@@ -186,6 +201,7 @@ public class MainCommand implements CommandExecutor {
         player.sendMessage("§f---------------");
         player.sendMessage("§6/eventmaster help §f- §7Shows this help menu");
         player.sendMessage("§6/eventmaster event §f- §7Lists all possible events");
+        player.sendMessage("§6/eventmaster reload §f- §7reload server config");
         player.sendMessage("§f---------------");
     }
 

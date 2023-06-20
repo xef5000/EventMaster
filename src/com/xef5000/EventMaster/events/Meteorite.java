@@ -61,6 +61,26 @@ public class Meteorite implements Listener {
         this.material = Material.valueOf(main.getConfig().getString("meteorite-block"));
     }
 
+    /**Admin Meteorite event from a list*/
+    public Meteorite(String listName, EventMaster eventMaster, Location blockPosition) {
+        if (!eventMaster.listManager.lists.containsKey(listName))
+            throw new IllegalArgumentException("No list exist with the name " + listName);
+        this.main = eventMaster;
+        this.locations = new ArrayList<>();
+        this.locations.add(blockPosition);
+        this.shockwave = eventMaster.listManager.main.getConfig().getBoolean("meteorite-lists." + listName + ".meteorite-shockwave");
+        this.lightning = eventMaster.listManager.main.getConfig().getBoolean("meteorite-lists." + listName + ".meteorite-lightning");
+        this.hologram = eventMaster.listManager.main.getConfig().getBoolean("meteorite-lists." + listName + ".meteorite-hologram");
+        this.hologramString = eventMaster.listManager.main.getConfig().getString("meteorite-lists." + listName + ".meteorite-hologram-text");
+        this.holograms = new ArrayList<>();
+        this.falling = eventMaster.listManager.main.getConfig().getBoolean("meteorite-lists." + listName + ".meteorite-fall");
+        this.percent = 100;
+        this.listName = listName;
+        this.material = Material.valueOf(eventMaster.listManager.main.getConfig().getString("meteorite-lists." + listName + ".meteorite-block"));
+
+        addDeserializedHolograms(listName);
+    }
+
     /**Meteorite event from a list*/
     public Meteorite(String listName, EventMaster eventMaster) {
         if (!eventMaster.listManager.lists.containsKey(listName))
