@@ -1,8 +1,25 @@
 name: EventMaster
-version: 1.0
+version: 1.0.0
 main: com.xef5000.EventMaster.EventMaster
 author: xef5000
+description: EventMaster is a plugin that lets you easily manage events for your server.
+api-version: 1.8.8
+prefix: EventMaster
 commands:
   eventmaster:
     description: Main command of this plugin
-    permission: eventmaster.main
+    permission: eventmaster.command.main
+
+permissions:
+  eventmaster.*:
+    description: Get access to all permissions
+    default: op
+    children:
+      eventmaster.command.main: true
+      eventmaster.meteorite.claim: true
+  eventmaster.command.main:
+    description: lets a player do something else
+    default: op
+  eventmaster.meteorite.claim:
+    description: Allow player to claim a meteorite
+    default: true

@@ -38,6 +38,8 @@ public class MainCommand implements CommandExecutor {
             return false;
         }
 
+        if (!(commandSender.hasPermission("eventmaster.command.main"))) return false;
+
         if ((args.length == 1 && args[0].equalsIgnoreCase("help") ) || !(args.length >= 1)) {
             sendHelpMessage(commandSender);
             return true;

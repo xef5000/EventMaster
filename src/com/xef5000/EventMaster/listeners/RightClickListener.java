@@ -28,6 +28,10 @@ public class RightClickListener implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         try {
             if (!(event.getAction() == Action.RIGHT_CLICK_BLOCK)) return;
+            if (!(event.getPlayer().hasPermission("eventmaster.meteorite.claim"))) {
+                event.getPlayer().sendMessage(EventMaster.COLOR_PREFIX + " §cYou do not have the permission to claim this!");
+                return;
+            }
             Location location = null;
             String listName = null;
             Meteorite meteorite = null;
