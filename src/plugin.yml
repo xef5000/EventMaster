@@ -1,5 +1,5 @@
 name: EventMaster
-version: 1.0.1
+version: 1.0.2
 main: com.xef5000.EventMaster.EventMaster
 author: xef5000
 description: EventMaster is a plugin that lets you easily manage events for your server.
