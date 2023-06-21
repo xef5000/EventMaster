@@ -37,8 +37,6 @@ public class RightClickListener implements Listener {
             String listName = null;
             Meteorite meteorite = null;
 
-            System.out.println(eventMaster.meteoriteManager.getActiveMeteorites().keySet());
-
             bigloop:
             for (String name : eventMaster.meteoriteManager.getActiveMeteorites().keySet()) {
                 for (Location loc : eventMaster.meteoriteManager.getActiveMeteorites().get(name)) {

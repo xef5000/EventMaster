@@ -88,7 +88,6 @@ public class Meteorite implements Listener {
         this.main = eventMaster;
         this.locations = new ArrayList<>();
         this.locations.addAll(eventMaster.listManager.getLocationsFromList(listName));
-        System.out.println("Found " + locations.size() + " coordinates for " + listName);
         this.shockwave = eventMaster.listManager.main.getConfig().getBoolean("meteorite-lists." + listName + ".meteorite-shockwave");
         this.lightning = eventMaster.listManager.main.getConfig().getBoolean("meteorite-lists." + listName + ".meteorite-lightning");
         this.hologram = eventMaster.listManager.main.getConfig().getBoolean("meteorite-lists." + listName + ".meteorite-hologram");
@@ -104,7 +103,6 @@ public class Meteorite implements Listener {
 
     /**Method for sending meteorites in list event*/
     public void sendMeteorites() {
-        System.out.println("[EventMaster] Sending meteorites.....");
         for (Location loc : locations) {
             if (!canSendMeteorite(loc)) continue;
             int randomInt = new SplittableRandom().nextInt(1, 101);
@@ -147,7 +145,6 @@ public class Meteorite implements Listener {
                     holograma.spawn();
                     holograms.add(holograma);
                 }
-                System.out.println("Added to " + listName + " " + loc);
                 main.meteoriteManager.addLocation(listName, loc);
             }
 
@@ -217,7 +214,6 @@ public class Meteorite implements Listener {
                 //System.out.println("XYZ " + fallingBlock.getLocation().getBlockX() + " " + fallingBlock.getLocation().getY() + " " + fallingBlock.getLocation().getBlockZ());
                 continue;
             }
-            System.out.println("DIED");
         }
 
     }
