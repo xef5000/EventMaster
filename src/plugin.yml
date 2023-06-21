@@ -18,7 +18,7 @@ permissions:
       eventmaster.command.main: true
       eventmaster.meteorite.claim: true
   eventmaster.command.main:
-    description: lets a player do something else
+    description: Can run commands associated with the plugin
     default: op
   eventmaster.meteorite.claim:
     description: Allow player to claim a meteorite
