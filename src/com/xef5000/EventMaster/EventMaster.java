@@ -2,6 +2,7 @@ package com.xef5000.EventMaster;
 
 import com.google.gson.JsonArray;
 import com.xef5000.EventMaster.commands.MainCommand;
+import com.xef5000.EventMaster.events.MeteoriteEventScheduler;
 import com.xef5000.EventMaster.listeners.EntityChangeBlockEventListener;
 import com.xef5000.EventMaster.listeners.EntitySpawnListener;
 import com.xef5000.EventMaster.listeners.RightClickListener;
@@ -16,6 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,6 +30,7 @@ public class EventMaster extends JavaPlugin {
     public static YamlConfiguration LANG;
     public static File LANG_FILE;
     public static Logger log;
+    private ArrayList<Integer> taskIDSchedulers = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -51,6 +54,7 @@ public class EventMaster extends JavaPlugin {
 
         log = getLogger();
         loadLang();
+        restartSchedulers();
     }
 
     @Override
@@ -59,6 +63,30 @@ public class EventMaster extends JavaPlugin {
         listManager.save();
 
         meteoriteManager.flushMemoryToJson();
+    }
+
+    public void softReload() {
+        // No need to flush memory or read files, just reloading the basics
+        reloadConfig();
+        loadLang();
+        restartSchedulers();
+        COLOR_PREFIX = getConfig().getString("prefix").replace("&", "§");
+    }
+
+
+    public void restartSchedulers() {
+        for (Integer taskID : taskIDSchedulers) {
+            Bukkit.getScheduler().cancelTask(taskID);
+        }
+
+        for (String list : listManager.lists.keySet()) {
+            if (!getConfig().contains("meteorite-lists." + list + ".schedule") || !getConfig().getBoolean("meteorite-lists." + list + ".schedule")) continue;
+            int delayInMinutes = getConfig().getInt("meteorite-lists." + list + ".schedule-delay");
+            MeteoriteEventScheduler scheduler = new MeteoriteEventScheduler(list, this);
+            taskIDSchedulers.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(this, scheduler, 0L, 20L * 60 * delayInMinutes));
+            System.out.println("Starting scheduler for list " + list + " at intervals of "+delayInMinutes+" minutes");
+        }
+
     }
 
     /**

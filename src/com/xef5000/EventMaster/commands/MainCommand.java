@@ -42,8 +42,7 @@ public class MainCommand implements CommandExecutor {
         if (!(commandSender.hasPermission("eventmaster.command.main"))) return false;
 
         if ((args.length == 1) && args[0].equalsIgnoreCase("reload")) {
-            eventMaster.reloadConfig();
-            eventMaster.loadLang();
+            eventMaster.softReload();
             commandSender.sendMessage(EventMaster.COLOR_PREFIX + " §aSuccessfully reloaded the config!");
             return true;
         }
