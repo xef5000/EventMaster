@@ -23,8 +23,12 @@ public class MeteoriteEventScheduler implements Runnable{
             throw new IllegalArgumentException("This list does not exist!");
 
         Meteorite meteorite = new Meteorite(listName, eventMaster);
-        meteorite.sendMeteorites();
-        eventMaster.meteoriteManager.addMeteorite(meteorite);
-        Bukkit.broadcastMessage(EventMaster.COLOR_PREFIX + " " + Lang.METEORITE_EVENT_LIST.toString().replace("%list", listName));
+        if (meteorite.canSendAtLeastOneMeteorite()) {
+            Bukkit.broadcastMessage(EventMaster.COLOR_PREFIX + " " + Lang.METEORITE_EVENT_LIST.toString().replace("%list", listName));
+            meteorite.sendMeteorites();
+            eventMaster.meteoriteManager.addMeteorite(meteorite);
+        }
+
+
     }
 }

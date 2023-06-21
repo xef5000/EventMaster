@@ -173,10 +173,13 @@ public class MainCommand implements CommandExecutor {
                         return false;
                     }
                     Meteorite meteorite = new Meteorite(listName, eventMaster);
-                    meteorite.sendMeteorites();
-                    eventMaster.meteoriteManager.addMeteorite(meteorite);
-                    //Meteorite.startEvent(listManager, listName);
-                    Bukkit.broadcastMessage(EventMaster.COLOR_PREFIX + " " + Lang.METEORITE_EVENT_LIST.toString().replace("%list", listName));
+                    if (meteorite.canSendAtLeastOneMeteorite()) {
+                        Bukkit.broadcastMessage(EventMaster.COLOR_PREFIX + " " + Lang.METEORITE_EVENT_LIST.toString().replace("%list", listName));
+                        meteorite.sendMeteorites();
+                        eventMaster.meteoriteManager.addMeteorite(meteorite);
+                        //Meteorite.startEvent(listManager, listName);
+                    }
+
                     return true;
                 }
             }

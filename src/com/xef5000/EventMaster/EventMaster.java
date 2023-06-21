@@ -83,7 +83,7 @@ public class EventMaster extends JavaPlugin {
             if (!getConfig().contains("meteorite-lists." + list + ".schedule") || !getConfig().getBoolean("meteorite-lists." + list + ".schedule")) continue;
             int delayInMinutes = getConfig().getInt("meteorite-lists." + list + ".schedule-delay");
             MeteoriteEventScheduler scheduler = new MeteoriteEventScheduler(list, this);
-            taskIDSchedulers.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(this, scheduler, 0L, 20L * 60 * delayInMinutes));
+            taskIDSchedulers.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(this, scheduler, 20L * 60 * delayInMinutes, 20L * 60 * delayInMinutes));
             System.out.println("Starting scheduler for list " + list + " at intervals of "+delayInMinutes+" minutes");
         }
 

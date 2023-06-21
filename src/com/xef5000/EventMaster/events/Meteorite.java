@@ -106,6 +106,7 @@ public class Meteorite implements Listener {
     public void sendMeteorites() {
         System.out.println("[EventMaster] Sending meteorites.....");
         for (Location loc : locations) {
+            if (!canSendMeteorite(loc)) continue;
             int randomInt = new SplittableRandom().nextInt(1, 101);
             //System.out.println("Generated #" + randomInt + "(" + percent + ") " + !(randomInt <= percent));
             //int random_int = (int)Math.floor(Math.random() * (100 - 1) + 1);
@@ -156,6 +157,8 @@ public class Meteorite implements Listener {
     public Meteorite sendMeteorite() {
         Location loc = locations.get(0);
         World world = loc.getWorld();
+
+        if (!canSendMeteorite(loc)) return null;
 
         if (this.falling) {
             Location newLoc = loc.clone().add(0, 5, 0);
@@ -217,9 +220,31 @@ public class Meteorite implements Listener {
             System.out.println("DIED");
         }
 
-
-
     }
+
+    public boolean canSendMeteorite(Location location) {
+        for (String name : main.meteoriteManager.getActiveMeteorites().keySet()) {
+            for (Location loc : main.meteoriteManager.getActiveMeteorites().get(name)) {
+                if (loc.getWorld() == location.getWorld() &&
+                        loc.getBlockX() == location.getBlockX() &&
+                        loc.getBlockY() == location.getBlockY() &&
+                        loc.getBlockZ() == location.getBlockZ()) {
+                    // basically here we've found that the coordinates of spot we want to send a meteorite to is already in the memeory
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean canSendAtLeastOneMeteorite() {
+        for (Location location : locations) {
+            if (canSendMeteorite(location))
+                return true;
+        }
+        return false;
+    }
+
 
     public ArrayList<Location> getLocations() {
         return locations;
